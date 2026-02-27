@@ -51,17 +51,46 @@ function Register() {
     return newErrors
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    
-    const newErrors = validate()
-    
-    if (Object.keys(newErrors).length === 0) {
-      console.log('Form submitted:', formData)
-    } else {
-      setErrors(newErrors)
+  const handleSubmit = async (e) => {
+  e.preventDefault()
+  
+  const newErrors = validate()
+  
+  if (Object.keys(newErrors).length === 0) {
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert('Registration successful!');
+        setFormData({
+          username: '',
+          email: '',
+          password: '',
+          confirmPassword: ''
+        });
+      } else {
+        alert(data.message || 'Registration failed');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error connecting to server');
     }
+  } else {
+    setErrors(newErrors)
   }
+}
 
   return (
     <div className="register-container">
