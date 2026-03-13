@@ -9,28 +9,69 @@ const Footer = () => {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <Leaf className="h-6 w-6 text-primary" />
-              <span className="text-xl font-display font-bold text-primary-foreground">Travelo</span>
+              <span className="text-xl font-display font-bold text-primary-foreground">
+                Travelo
+              </span>
             </div>
-            <p className="text-sm leading-relaxed">Budget-friendly accommodations with transparent pricing for everyday travelers.</p>
+            <p className="text-sm leading-relaxed">
+              Budget-friendly accommodations with transparent pricing for
+              everyday travelers.
+            </p>
           </div>
           <div>
-            <h4 className="font-display font-semibold text-primary-foreground mb-4 text-sm">Explore</h4>
+            <h4 className="font-display font-semibold text-primary-foreground mb-4 text-sm">
+              Explore
+            </h4>
             <div className="space-y-2 text-sm">
-              <Link to="/" className="block hover:text-primary transition-colors">Home</Link>
-              <Link to="/stays" className="block hover:text-primary transition-colors">Stays</Link>
-              <Link to="/about" className="block hover:text-primary transition-colors">About</Link>
+              <Link
+                to="/"
+                className="block hover:text-primary transition-colors"
+              >
+                Home
+              </Link>
+              <Link
+                to="/stays"
+                className="block hover:text-primary transition-colors"
+              >
+                Stays
+              </Link>
+              <Link
+                to="/about"
+                className="block hover:text-primary transition-colors"
+              >
+                About
+              </Link>
             </div>
           </div>
           <div>
-            <h4 className="font-display font-semibold text-primary-foreground mb-4 text-sm">Support</h4>
+            <h4 className="font-display font-semibold text-primary-foreground mb-4 text-sm">
+              Support
+            </h4>
             <div className="space-y-2 text-sm">
-              <Link to="/contact" className="block hover:text-primary transition-colors">Contact Us</Link>
-              <Link to="/faq" className="block hover:text-primary transition-colors">FAQ</Link>
-              <Link to="/help" className="block hover:text-primary transition-colors">Help Center</Link>
+              <Link
+                to="/contact"
+                className="block hover:text-primary transition-colors"
+              >
+                Contact Us
+              </Link>
+              <Link
+                to="/faq"
+                className="block hover:text-primary transition-colors"
+              >
+                FAQ
+              </Link>
+              <Link
+                to="/help"
+                className="block hover:text-primary transition-colors"
+              >
+                Help Center
+              </Link>
             </div>
           </div>
           <div>
-            <h4 className="font-display font-semibold text-primary-foreground mb-4 text-sm">Contact</h4>
+            <h4 className="font-display font-semibold text-primary-foreground mb-4 text-sm">
+              Contact
+            </h4>
             <div className="space-y-2 text-sm">
               <p>hello@travelo.com</p>
               <p>+1 (555) 123-4567</p>

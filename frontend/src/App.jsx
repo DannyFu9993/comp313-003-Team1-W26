@@ -1,11 +1,11 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import Register from './pages/Register'
-import Navbar from "./components/Navbar"
-import Hero from "./components/Hero"
-import FeaturedStays from "./components/FeaturedStays"
-import BenefitsSection from "./components/BenefitsSection"
-import CTASection from "./components/CTASection"
-import Footer from "./components/Footer"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Register from "./pages/Register";
+import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
+import FeaturedStays from "./components/FeaturedStays";
+import BenefitsSection from "./components/BenefitsSection";
+import CTASection from "./components/CTASection";
+import Footer from "./components/Footer";
 
 function Home() {
   return (
@@ -17,8 +17,15 @@ function Home() {
       <CTASection />
       <Footer />
     </>
-  )
+  );
 }
+
+import EmployeeLogin from "./pages/EmployeeLogin";
+
+import EmployeeHome from "./pages/EmployeeHome";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -26,9 +33,19 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/employee-login" element={<EmployeeLogin />} />
+        <Route
+          path="/employee-home"
+          element={
+            <ProtectedRoute>
+              <EmployeeHome />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
