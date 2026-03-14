@@ -18,8 +18,10 @@ mongoose
 // Routes
 const authRoutes = require("./routes/auth");
 const employeeRoutes = require("./routes/employee");
+const accommodationRoutes = require("./routes/accommodations");
 app.use("/api/auth", authRoutes);
 app.use("/api/employee", employeeRoutes);
+app.use("/api/accommodations", accommodationRoutes);
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
