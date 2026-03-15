@@ -17,6 +17,26 @@ router.get("/", async (req, res) => {
   }
 });
 
+// @route   GET /api/accommodations/featured/list
+// @desc    Get featured accommodations
+// @access  Public
+router.get("/featured/list", async (req, res) => {
+  try {
+    const accommodations = await Accommodation.find({
+      status: "active",
+      isFeatured: true,
+    })
+      .sort({ createdAt: -1 })
+      .limit(3); // optional but recommended
+
+
+    res.json(accommodations);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
 // NEW ROUTE
 // @route   GET /api/accommodations/:id
 // @desc    Get one accommodation by ID
@@ -42,18 +62,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.get("/featured/list", async (req, res) => {
-  try {
-    const accommodations = await Accommodation.find({
-      status: "active",
-      isFeatured: true,
-    }).sort({ createdAt: -1 });
 
-    res.json(accommodations);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
-});
 
 module.exports = router;

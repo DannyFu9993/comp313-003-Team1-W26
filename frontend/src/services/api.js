@@ -6,4 +6,7 @@ const api = axios.create({
 
 export const getAccommodations = () => api.get("/accommodations");
 
+export const getFeaturedAccommodations = () =>
+  api.get("/accommodations/featured/list");
+
 export default api;
