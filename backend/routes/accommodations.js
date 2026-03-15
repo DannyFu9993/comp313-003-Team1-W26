@@ -17,4 +17,29 @@ router.get("/", async (req, res) => {
   }
 });
 
+// NEW ROUTE
+// @route   GET /api/accommodations/:id
+// @desc    Get one accommodation by ID
+// @access  Public
+router.get("/:id", async (req, res) => {
+  try {
+    const accommodation = await Accommodation.findById(req.params.id);
+
+    if (!accommodation) {
+      return res.status(404).json({ message: "Accommodation not found" });
+    }
+
+    res.json(accommodation);
+  } catch (err) {
+    console.error(err.message);
+
+    // if invalid ObjectId
+    if (err.kind === "ObjectId") {
+      return res.status(404).json({ message: "Accommodation not found" });
+    }
+
+    res.status(500).send("Server Error");
+  }
+});
+
 module.exports = router;
