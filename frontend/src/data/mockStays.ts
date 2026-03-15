@@ -5,13 +5,15 @@ import stay4 from "@/assets/stay-4.jpg";
 import stay5 from "@/assets/stay-5.jpg";
 
 export interface Stay {
-  id: number;
+  _id: string;
   title: string;
   location: string;
-  price: number;
+  pricePerNight: number;
   rating: number;
   description: string;
-  image: string;
+  imageUrl: string;
+  propertyType: string;
+  status: string;
   badge?: string;
 }
 
