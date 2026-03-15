@@ -1,5 +1,4 @@
 import { useParams, Link } from "react-router-dom";
-import { mockStays } from "@/data/mockStays";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { ArrowLeft, Star, MapPin } from "lucide-react";
 
 const StayDetail = () => {
   const { id } = useParams();
-  const stay = mockStays.find((s) => s.id === Number(id));
+  const stay = mockStays.find((s) => s._id === String(id));
 
   if (!stay) {
     return (
@@ -30,7 +29,7 @@ const StayDetail = () => {
           <ArrowLeft className="h-4 w-4" /> Back to all stays
         </Link>
         <div className="rounded-2xl overflow-hidden mb-8">
-          <img src={stay.image} alt={stay.title} className="w-full h-[400px] object-cover" />
+          <img src={stay.imageUrl} alt={stay.title} className="w-full h-[400px] object-cover" />
         </div>
         <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
           <div>
@@ -40,7 +39,7 @@ const StayDetail = () => {
             </div>
           </div>
           <div className="text-right">
-            <div className="text-3xl font-bold text-foreground">${stay.price}<span className="text-base font-normal text-muted-foreground"> / night</span></div>
+            <div className="text-3xl font-bold text-foreground">${stay.pricePerNight}<span className="text-base font-normal text-muted-foreground"> / night</span></div>
             <div className="flex items-center gap-1 text-warm justify-end mt-1">
               <Star className="h-4 w-4 fill-current" />
               <span className="text-sm font-medium text-foreground">{stay.rating}</span>

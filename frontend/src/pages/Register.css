@@ -3,80 +3,127 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
+  background:
+    linear-gradient(rgba(11, 24, 18, 0.45), rgba(11, 24, 18, 0.45)),
+    url("../assets/hero-bg.jpg") center/cover no-repeat;
+  padding: 24px;
 }
 
 .register-card {
-  background: white;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   width: 100%;
-  max-width: 400px;
+  max-width: 460px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 40px 36px;
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
 .register-card h1 {
-  margin: 0 0 30px 0;
-  font-size: 28px;
+  margin: 0 0 10px 0;
+  font-size: 32px;
   text-align: center;
-  color: #333;
+  color: #163126;
+  font-weight: 700;
+}
+
+.register-card p {
+  margin: 0 0 28px 0;
+  text-align: center;
+  color: #5f7468;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  color: #555;
-  font-weight: 500;
+  color: #2d473a;
+  font-weight: 600;
+  font-size: 14px;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
   width: 100%;
-  padding: 12px;
-  border: 2px solid #e0e0e0;
-  border-radius: 6px;
-  font-size: 14px;
-  transition: border-color 0.3s;
+  padding: 14px 16px;
+  border: 1.5px solid #d8e4dc;
+  border-radius: 14px;
+  font-size: 15px;
+  background: #f8fbf9;
+  color: #1f2d27;
+  transition: all 0.25s ease;
   box-sizing: border-box;
 }
 
-.form-group input:focus {
-  outline: none;
-  border-color: #667eea;
+.form-group input::placeholder {
+  color: #94a79c;
 }
 
-.form-group input.error {
-  border-color: #e74c3c;
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #35b27d;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(53, 178, 125, 0.12);
+}
+
+.form-group input.error,
+.form-group select.error {
+  border-color: #dc6b5d;
+  background: #fff8f7;
 }
 
 .error-message {
   display: block;
-  color: #e74c3c;
+  color: #d15345;
   font-size: 12px;
-  margin-top: 5px;
+  margin-top: 6px;
 }
 
 .register-button {
   width: 100%;
-  padding: 14px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 15px;
+  margin-top: 10px;
+  background: #35b27d;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 14px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.25s ease;
+  box-shadow: 0 10px 20px rgba(53, 178, 125, 0.22);
 }
 
 .register-button:hover {
-  transform: translateY(-2px);
+  background: #2d9b6c;
+  transform: translateY(-1px);
 }
 
 .register-button:active {
   transform: translateY(0);
+}
+
+.register-footer {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 14px;
+  color: #5f7468;
+}
+
+.register-footer a {
+  color: #228b60;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.register-footer a:hover {
+  text-decoration: underline;
 }
