@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, allowedRoles = ["employee"] }) => {
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -11,11 +11,13 @@ const ProtectedRoute = ({ children }) => {
   try {
     // Decoding JWT manually to avoid external dependency issues
     const payload = token.split(".")[1];
-    const decodedStr = atob(payload);
+    const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const decodedStr = atob(normalized);
     const decoded = JSON.parse(decodedStr);
+    const role = decoded?.user?.role?.toLowerCase();
+    const allowed = allowedRoles.map((r) => r.toLowerCase());
 
-    // Fallback checking logic just in case it is strictly missing
-    if (!decoded || !decoded.user || decoded.user.role !== "employee") {
+    if (!decoded || !decoded.user || !allowed.includes(role)) {
       console.error("Access denied:", decoded?.user?.role || "no role");
       return <Navigate to="/" />;
     }

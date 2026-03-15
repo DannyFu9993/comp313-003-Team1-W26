@@ -41,6 +41,14 @@ function App() {
         <Route path="/accommodations/:id" element={<StayDetail />} />
         <Route path="/stays" element={<AllStays />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/admin-dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["employee", "admin"]}>
+              <EmployeeHome />
+            </ProtectedRoute>
+          }
+        />
 
         
         <Route

@@ -7,7 +7,23 @@ const Accommodation = require("../models/Accommodation");
 // @access  Public
 router.get("/", async (req, res) => {
   try {
-    const accommodations = await Accommodation.find({ status: "active" }).sort({
+    const { city, guests, checkIn, checkOut } = req.query;
+    const filters = { status: "active" };
+
+    if (city && String(city).trim()) {
+      filters.location = { $regex: String(city).trim(), $options: "i" };
+    }
+
+    if (guests && !Number.isNaN(Number(guests))) {
+      filters.guests = { $gte: Number(guests) };
+    }
+
+    // Lightweight date validation only; full availability model is not in current schema.
+    if (checkIn && checkOut && new Date(checkOut) <= new Date(checkIn)) {
+      return res.json([]);
+    }
+
+    const accommodations = await Accommodation.find(filters).sort({
       createdAt: -1,
     });
     res.json(accommodations);
