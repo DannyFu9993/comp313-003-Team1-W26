@@ -29,6 +29,8 @@ const Login = () => {
       if (res.data.user) {
         localStorage.setItem("userRole", res.data.user.role);
 
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+
         // Navigate based on role
         if (res.data.user.role === "employee") {
           navigate("/employee-home");
@@ -36,7 +38,7 @@ const Login = () => {
         }
       }
 
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       setError("Invalid credentials");
       console.error(err);
