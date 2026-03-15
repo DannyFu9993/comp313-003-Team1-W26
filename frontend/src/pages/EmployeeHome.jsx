@@ -12,7 +12,7 @@ const EmployeeHome = () => {
   const [accommodations, setAccommodations] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -20,6 +20,7 @@ const EmployeeHome = () => {
     location: "",
     pricePerNight: "",
     propertyType: "Apartment",
+    guests: "1",
   });
 
   useEffect(() => {
@@ -63,24 +64,64 @@ const EmployeeHome = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      await axios.post(
-        "http://localhost:5001/api/employee/accommodations",
-        formData,
-        {
-          headers: { "x-auth-token": token },
-        },
-      );
-      setShowModal(false);
+      if (editingId) {
+        await axios.put(
+          `http://localhost:5001/api/employee/accommodations/${editingId}`,
+          formData,
+          {
+            headers: { "x-auth-token": token },
+          },
+        );
+      } else {
+        await axios.post(
+          "http://localhost:5001/api/employee/accommodations",
+          formData,
+          {
+            headers: { "x-auth-token": token },
+          },
+        );
+      }
       setFormData({
         title: "",
         location: "",
         pricePerNight: "",
         propertyType: "Apartment",
+        guests: "1",
       });
+      setEditingId(null);
       fetchAccommodations();
     } catch (err) {
       console.error(err);
-      alert("Failed to create listing");
+      alert(editingId ? "Failed to update listing" : "Failed to create listing");
+    }
+  };
+
+  const handleEditStart = (acc) => {
+    setEditingId(acc._id);
+    setFormData({
+      title: acc.title || "",
+      location: acc.location || "",
+      pricePerNight: String(acc.pricePerNight || ""),
+      propertyType: acc.propertyType || "Apartment",
+      guests: String(acc.guests || 1),
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleDeactivate = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.patch(
+        `http://localhost:5001/api/employee/accommodations/${id}/deactivate`,
+        {},
+        {
+          headers: { "x-auth-token": token },
+        },
+      );
+      fetchAccommodations();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to deactivate listing");
     }
   };
 
@@ -135,13 +176,15 @@ const EmployeeHome = () => {
             <div className="mb-20">
               <div className="mb-8">
                 <span className="text-sm font-semibold text-primary tracking-wider uppercase">
-                  Management
+                  Manage Listings
                 </span>
                 <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mt-2">
-                  Create Accommodation
+                  {editingId ? "Edit Accommodation" : "Create Accommodation"}
                 </h2>
                 <p className="text-muted-foreground mt-3">
-                  Add a new property to the company catalog.
+                  {editingId
+                    ? "Update the selected property details."
+                    : "Add a new property to the company catalog."}
                 </p>
               </div>
 
@@ -206,12 +249,48 @@ const EmployeeHome = () => {
                         <option value="Cabin">Cabin</option>
                       </select>
                     </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground">
+                        Guests
+                      </label>
+                      <Input
+                        required
+                        type="number"
+                        min="1"
+                        name="guests"
+                        value={formData.guests}
+                        onChange={handleChange}
+                        placeholder="2"
+                      />
+                    </div>
                   </div>
 
                   <div className="pt-2 flex justify-end">
-                    <Button type="submit" size="lg" className="gap-2">
-                      <Plus className="h-4 w-4" /> Publish Listing
-                    </Button>
+                    <div className="flex gap-3">
+                      {editingId && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            setEditingId(null);
+                            setFormData({
+                              title: "",
+                              location: "",
+                              pricePerNight: "",
+                              propertyType: "Apartment",
+                              guests: "1",
+                            });
+                          }}
+                        >
+                          Cancel Edit
+                        </Button>
+                      )}
+                      <Button type="submit" size="lg" className="gap-2">
+                        <Plus className="h-4 w-4" />{" "}
+                        {editingId ? "Update Listing" : "Publish Listing"}
+                      </Button>
+                    </div>
                   </div>
                 </form>
               </div>
@@ -257,20 +336,43 @@ const EmployeeHome = () => {
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                   {accommodations.map((acc) => (
-                    <AccommodationCard
-                      key={acc._id}
-                      stay={{
-                        ...acc,
-                        id: acc._id,
-                        title: acc.title,
-                        location: acc.location,
-                        price: acc.pricePerNight,
-                        rating: 5.0,
-                        description: `${acc.propertyType} property.`,
-                        image: stay1,
-                        badge: "Active Listing",
-                      }}
-                    />
+                    <div key={acc._id} className="space-y-3">
+                      <AccommodationCard
+                        stay={{
+                          ...acc,
+                          id: acc._id,
+                          title: acc.title,
+                          location: acc.location,
+                          price: acc.pricePerNight,
+                          rating: 5.0,
+                          description: `${acc.propertyType} property.`,
+                          image: stay1,
+                          badge:
+                            acc.status === "inactive"
+                              ? "Inactive Listing"
+                              : "Active Listing",
+                        }}
+                      />
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => handleEditStart(acc)}
+                        >
+                          Edit Listing
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          className="flex-1"
+                          disabled={acc.status === "inactive"}
+                          onClick={() => handleDeactivate(acc._id)}
+                        >
+                          Deactivate Listing
+                        </Button>
+                      </div>
+                    </div>
                   ))}
                 </div>
               )}

@@ -32,8 +32,9 @@ const Login = () => {
         localStorage.setItem("user", JSON.stringify(res.data.user));
 
         // Navigate based on role
-        if (res.data.user.role === "employee") {
-          navigate("/employee-home");
+        const normalizedRole = String(res.data.user.role || "").toLowerCase();
+        if (normalizedRole === "employee" || normalizedRole === "admin") {
+          navigate("/admin-dashboard");
           return;
         }
       }

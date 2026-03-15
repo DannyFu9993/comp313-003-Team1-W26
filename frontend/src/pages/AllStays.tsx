@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AccommodationCard from "@/components/AccommodationCard";
@@ -9,13 +10,27 @@ const AllStays = () => {
   const [stays, setStays] = useState<Stay[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    getAccommodations()
+    const city = searchParams.get("city") || "";
+    const checkIn = searchParams.get("checkIn") || "";
+    const checkOut = searchParams.get("checkOut") || "";
+    const guests = searchParams.get("guests") || "";
+
+    setLoading(true);
+    setError("");
+
+    getAccommodations({
+      city,
+      checkIn,
+      checkOut,
+      guests,
+    })
       .then((res) => setStays(res.data))
       .catch(() => setError("Failed to load stays."))
       .finally(() => setLoading(false));
-  }, []);
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -28,6 +43,14 @@ const AllStays = () => {
             <p className="mt-3 text-muted-foreground">
               Explore all available budget-friendly accommodations on Travelo.
             </p>
+            {(searchParams.get("city") ||
+              searchParams.get("checkIn") ||
+              searchParams.get("checkOut") ||
+              searchParams.get("guests")) && (
+              <p className="mt-3 text-sm text-muted-foreground">
+                Showing results for your search filters.
+              </p>
+            )}
           </div>
 
           {loading && (

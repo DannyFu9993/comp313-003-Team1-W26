@@ -27,13 +27,14 @@ const EmployeeLogin = () => {
 
       if (res.data.user) {
         localStorage.setItem("userRole", res.data.user.role);
-        if (res.data.user.role !== "employee") {
+        const normalizedRole = String(res.data.user.role || "").toLowerCase();
+        if (normalizedRole !== "employee" && normalizedRole !== "admin") {
           setError("Access Denied: This is not an employee account.");
           return;
         }
       }
 
-      navigate("/employee-home");
+      navigate("/admin-dashboard");
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
