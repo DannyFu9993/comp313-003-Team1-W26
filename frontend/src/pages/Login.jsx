@@ -45,35 +45,44 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      <h2>Login</h2>
-      <form onSubmit={onSubmit}>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <div className="form-group">
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={email}
-            onChange={onChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            value={password}
-            onChange={onChange}
-            required
-          />
-        </div>
-        <button type="submit">Login</button>
-      </form>
-      <p style={{ marginTop: "20px" }}>
-        Are you an employee? <a href="/employee-login">Login here</a>
-      </p>
-    </div>
+  <div className="login-card">
+    <h2>Login</h2>
+
+    <form onSubmit={onSubmit}>
+      {error && <p className="error-message">{error}</p>}
+
+      <div className="form-group">
+        <label>Email</label>
+        <input
+          type="email"
+          name="email"
+          value={email}
+          onChange={onChange}
+          required
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Password</label>
+        <input
+          type="password"
+          name="password"
+          value={password}
+          onChange={onChange}
+          required
+        />
+      </div>
+
+      <button type="submit" className="login-button">
+        Login
+      </button>
+    </form>
+
+    <p className="login-footer">
+      Are you an employee? <a href="/employee-login">Login here</a>
+    </p>
+  </div>
+</div>
   );
 };
 

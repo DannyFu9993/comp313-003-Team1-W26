@@ -1,59 +1,248 @@
 import { useParams, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Star, MapPin } from "lucide-react";
+import { ArrowLeft, Star, MapPin, Wifi, BedDouble, Bath, Users } from "lucide-react";
+import type { Stay } from "@/data/mockStays"; 
 
 const StayDetail = () => {
   const { id } = useParams();
-  const stay = mockStays.find((s) => s._id === String(id));
+  const [stay, setStay] = useState<Stay | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!stay) {
+  useEffect(() => {
+    const fetchStay = async () => {
+      try {
+        const response = await fetch(`http://localhost:5001/api/accommodations/${id}`);
+        if (!response.ok) {
+          throw new Error("Stay not found");
+        }
+        const data = await response.json();
+        setStay(data);
+      } catch (error) {
+        console.error("Error fetching stay:", error);
+        setStay(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) fetchStay();
+  }, [id]);
+
+  if (loading) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
         <div className="container mx-auto px-4 py-20 text-center">
-          <h1 className="text-2xl font-display font-bold text-foreground mb-4">Stay not found</h1>
-          <Button asChild><Link to="/">Back to Home</Link></Button>
+          <h1 className="text-2xl font-bold text-foreground">Loading stay...</h1>
         </div>
         <Footer />
       </div>
     );
   }
 
+  if (!stay) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="container mx-auto px-4 py-20 text-center">
+          <h1 className="text-2xl font-bold text-foreground mb-4">Stay not found</h1>
+          <Button asChild>
+            <Link to="/accommodations">Back to Stays</Link>
+          </Button>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  const subtotal = stay.pricePerNight ?? 0;
+  const cleaningFee = stay.cleaningFee ?? 0;
+  const serviceFee = stay.serviceFee ?? 0;
+  const taxes = stay.taxes ?? 0;
+  const total =
+    stay.totalPrice ?? subtotal + cleaningFee + serviceFee + taxes;
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="container mx-auto px-4 py-10 max-w-4xl">
-        <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mb-6 transition-colors">
-          <ArrowLeft className="h-4 w-4" /> Back to all stays
+
+      <div className="container mx-auto max-w-7xl px-4 py-10">
+        <Link
+          to="/accommodations"
+          className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to all stays
         </Link>
-        <div className="rounded-2xl overflow-hidden mb-8">
-          <img src={stay.imageUrl} alt={stay.title} className="w-full h-[400px] object-cover" />
-        </div>
-        <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
+
+        <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-display font-bold text-foreground">{stay.title}</h1>
-            <div className="flex items-center gap-2 text-muted-foreground mt-1">
-              <MapPin className="h-4 w-4" /> {stay.location}
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground">
+              {stay.title}
+            </h1>
+            <div className="mt-2 flex items-center gap-4 text-sm text-muted-foreground">
+              <span className="inline-flex items-center gap-1">
+                <MapPin className="h-4 w-4" />
+                {stay.location}
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <Star className="h-4 w-4 fill-current text-yellow-500" />
+                {stay.rating}
+              </span>
             </div>
           </div>
-          <div className="text-right">
-            <div className="text-3xl font-bold text-foreground">${stay.pricePerNight}<span className="text-base font-normal text-muted-foreground"> / night</span></div>
-            <div className="flex items-center gap-1 text-warm justify-end mt-1">
-              <Star className="h-4 w-4 fill-current" />
-              <span className="text-sm font-medium text-foreground">{stay.rating}</span>
+
+          {stay.badge && (
+            <span className="inline-block rounded-full bg-emerald-600 px-4 py-2 text-xs font-semibold text-white">
+              {stay.badge}
+            </span>
+          )}
+        </div>
+
+        <div className="mb-10 grid gap-4 md:grid-cols-3">
+          <div className="md:col-span-2 overflow-hidden rounded-3xl">
+            <img
+              src={stay.imageUrl}
+              alt={stay.title}
+              className="h-[420px] w-full object-cover"
+            />
+          </div>
+
+          <div className="grid gap-4">
+            {(stay.imageGallery ?? []).slice(0, 2).map((img, index) => (
+              <div key={index} className="overflow-hidden rounded-2xl">
+                <img
+                  src={img}
+                  alt={`${stay.title} ${index + 1}`}
+                  className="h-[200px] w-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid gap-10 lg:grid-cols-[2fr_1fr]">
+          <div>
+            <div className="mb-8 rounded-3xl bg-white p-6 shadow-sm">
+              <h2 className="mb-4 text-2xl font-semibold text-foreground">
+                About this stay
+              </h2>
+              <p className="leading-relaxed text-muted-foreground">
+                {stay.description}
+              </p>
+            </div>
+
+            <div className="mb-8 rounded-3xl bg-white p-6 shadow-sm">
+              <h2 className="mb-4 text-2xl font-semibold text-foreground">
+                Property details
+              </h2>
+              <div className="grid grid-cols-2 gap-4 text-sm text-foreground md:grid-cols-4">
+                <div className="rounded-2xl bg-slate-50 p-4">
+                  <Users className="mb-2 h-5 w-5 text-emerald-600" />
+                  <p className="font-medium">{stay.guests ?? "-" } guests</p>
+                </div>
+                <div className="rounded-2xl bg-slate-50 p-4">
+                  <BedDouble className="mb-2 h-5 w-5 text-emerald-600" />
+                  <p className="font-medium">{stay.bedrooms ?? "-" } bedroom(s)</p>
+                </div>
+                <div className="rounded-2xl bg-slate-50 p-4">
+                  <BedDouble className="mb-2 h-5 w-5 text-emerald-600" />
+                  <p className="font-medium">{stay.beds ?? "-" } bed(s)</p>
+                </div>
+                <div className="rounded-2xl bg-slate-50 p-4">
+                  <Bath className="mb-2 h-5 w-5 text-emerald-600" />
+                  <p className="font-medium">{stay.bathrooms ?? "-" } bathroom(s)</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mb-8 rounded-3xl bg-white p-6 shadow-sm">
+              <h2 className="mb-4 text-2xl font-semibold text-foreground">
+                Amenities
+              </h2>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {(stay.amenities ?? []).map((amenity, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-3 rounded-2xl bg-slate-50 px-4 py-3 text-foreground"
+                  >
+                    <Wifi className="h-4 w-4 text-emerald-600" />
+                    <span>{amenity}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-3xl bg-white p-6 shadow-sm">
+              <h2 className="mb-4 text-2xl font-semibold text-foreground">
+                Policies
+              </h2>
+              <div className="space-y-3 text-muted-foreground">
+                <p><span className="font-medium text-foreground">Check-in:</span> {stay.checkIn ?? "3:00 PM"}</p>
+                <p><span className="font-medium text-foreground">Check-out:</span> {stay.checkOut ?? "11:00 AM"}</p>
+                <p><span className="font-medium text-foreground">Cancellation:</span> {stay.cancellationPolicy ?? "Policy not specified"}</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div className="sticky top-24 rounded-3xl bg-white p-6 shadow-lg">
+              <h2 className="mb-4 text-2xl font-semibold text-foreground">
+                Price details
+              </h2>
+
+              <div className="mb-4 text-3xl font-bold text-foreground">
+                ${stay.pricePerNight}
+                <span className="text-base font-normal text-muted-foreground"> / night</span>
+              </div>
+
+              <div className="space-y-3 border-b border-slate-200 pb-4 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Base price</span>
+                  <span>${subtotal}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Cleaning fee</span>
+                  <span>${cleaningFee}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Service fee</span>
+                  <span>${serviceFee}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Taxes</span>
+                  <span>${taxes}</span>
+                </div>
+              </div>
+
+              <div className="my-4 flex justify-between text-base font-semibold text-foreground">
+                <span>Total</span>
+                <span>${total}</span>
+              </div>
+
+              {stay.externalUrl ? (
+                <a
+                  href={stay.externalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button className="w-full rounded-2xl bg-emerald-600 hover:bg-emerald-700">
+                    Book Now
+                  </Button>
+                </a>
+              ) : (
+                <Button className="w-full rounded-2xl bg-emerald-600 hover:bg-emerald-700">
+                  Book Now
+                </Button>
+              )}
             </div>
           </div>
         </div>
-        {stay.badge && (
-          <span className="inline-block bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full mb-4">
-            {stay.badge}
-          </span>
-        )}
-        <p className="text-muted-foreground leading-relaxed mb-8">{stay.description}</p>
-        <Button size="lg" className="rounded-full px-8">Book Now</Button>
       </div>
+
       <Footer />
     </div>
   );

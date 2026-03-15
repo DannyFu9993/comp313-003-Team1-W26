@@ -45,10 +45,13 @@ const EmployeeLogin = () => {
   };
 
   return (
-    <div className="login-container">
+  <div className="login-container">
+    <div className="login-card">
       <h2>Employee Login</h2>
+
       <form onSubmit={onSubmit}>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <p className="error-message">{error}</p>}
+
         <div className="form-group">
           <label>Email</label>
           <input
@@ -59,6 +62,7 @@ const EmployeeLogin = () => {
             required
           />
         </div>
+
         <div className="form-group">
           <label>Password</label>
           <input
@@ -69,9 +73,17 @@ const EmployeeLogin = () => {
             required
           />
         </div>
-        <button type="submit">Login</button>
+
+        <button type="submit" className="login-button">
+          Login
+        </button>
       </form>
+
+      <p className="login-footer">
+        Not an employee? <a href="/login">User login</a>
+      </p>
     </div>
+  </div>
   );
 };
 

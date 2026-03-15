@@ -39,7 +39,7 @@ const AccommodationCard = ({ stay }: { stay: Stay }) => {
             <span className="text-sm text-muted-foreground"> / night</span>
           </div>
           <Button variant="outline" size="sm" asChild className="rounded-full">
-            <Link to={`/stays/${stay._id}`}>View Details</Link>
+            <Link to={`/accommodations/${stay._id}`}>View Details</Link>
           </Button>
         </div>
       </div>

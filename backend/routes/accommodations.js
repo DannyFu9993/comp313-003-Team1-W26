@@ -17,4 +17,51 @@ router.get("/", async (req, res) => {
   }
 });
 
+// @route   GET /api/accommodations/featured/list
+// @desc    Get featured accommodations
+// @access  Public
+router.get("/featured/list", async (req, res) => {
+  try {
+    const accommodations = await Accommodation.find({
+      status: "active",
+      isFeatured: true,
+    })
+      .sort({ createdAt: -1 })
+      .limit(3); // optional but recommended
+
+
+    res.json(accommodations);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+// NEW ROUTE
+// @route   GET /api/accommodations/:id
+// @desc    Get one accommodation by ID
+// @access  Public
+router.get("/:id", async (req, res) => {
+  try {
+    const accommodation = await Accommodation.findById(req.params.id);
+
+    if (!accommodation) {
+      return res.status(404).json({ message: "Accommodation not found" });
+    }
+
+    res.json(accommodation);
+  } catch (err) {
+    console.error(err.message);
+
+    // if invalid ObjectId
+    if (err.kind === "ObjectId") {
+      return res.status(404).json({ message: "Accommodation not found" });
+    }
+
+    res.status(500).send("Server Error");
+  }
+});
+
+
+
 module.exports = router;

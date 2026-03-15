@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAccommodations } from "@/services/api";
+import { getFeaturedAccommodations } from "@/services/api"; 
 import AccommodationCard from "./AccommodationCard";
 import type { Stay } from "@/data/mockStays";
 
@@ -9,11 +9,14 @@ const FeaturedStays = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    getAccommodations()
-      .then((res) => setStays(res.data))
-      .catch(() => setError("Failed to load accommodations."))
-      .finally(() => setLoading(false));
-  }, []);
+  getFeaturedAccommodations()
+    .then((res) => {
+      console.log("featured frontend response:", res.data);
+      setStays(Array.isArray(res.data) ? res.data : []);
+    })
+    .catch(() => setError("Failed to load accommodations."))
+    .finally(() => setLoading(false));
+}, []);
 
   return (
     <section className="py-20 bg-background">
@@ -39,9 +42,10 @@ const FeaturedStays = () => {
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {stays.map((stay) => (
-            <AccommodationCard key={stay._id} stay={stay} />
-          ))}
+          {Array.isArray(stays) &&
+  stays.map((stay) => (
+    <AccommodationCard key={stay._id} stay={stay} />
+  ))}
         </div>
       </div>
     </section>
