@@ -71,7 +71,7 @@ const StayDetail = () => {
 
       <div className="container mx-auto max-w-7xl px-4 py-10">
         <Link
-          to="/accommodations"
+          to="/stays"
           className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
