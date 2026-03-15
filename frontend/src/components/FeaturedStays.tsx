@@ -1,7 +1,20 @@
-import { mockStays } from "@/data/mockStays";
+import { useEffect, useState } from "react";
+import { getAccommodations } from "@/services/api";
 import AccommodationCard from "./AccommodationCard";
+import type { Stay } from "@/data/mockStays";
 
 const FeaturedStays = () => {
+  const [stays, setStays] = useState<Stay[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    getAccommodations()
+      .then((res) => setStays(res.data))
+      .catch(() => setError("Failed to load accommodations."))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
@@ -12,9 +25,22 @@ const FeaturedStays = () => {
             Explore our top-rated budget-friendly accommodations around the world.
           </p>
         </div>
+
+        {loading && (
+          <p className="text-center text-muted-foreground">Loading stays...</p>
+        )}
+
+        {error && (
+          <p className="text-center text-destructive">{error}</p>
+        )}
+
+        {!loading && !error && stays.length === 0 && (
+          <p className="text-center text-muted-foreground">No accommodations available yet.</p>
+        )}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockStays.map((stay) => (
-            <AccommodationCard key={stay.id} stay={stay} />
+          {stays.map((stay) => (
+            <AccommodationCard key={stay._id} stay={stay} />
           ))}
         </div>
       </div>
