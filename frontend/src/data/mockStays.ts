@@ -25,4 +25,5 @@ export interface Stay {
   hostName?: string;
   cancellationPolicy?: string;
   externalUrl?: string;
+  isFeatured?: boolean;
 }

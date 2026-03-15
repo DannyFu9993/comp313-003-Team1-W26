@@ -7,6 +7,7 @@ import BenefitsSection from "./components/BenefitsSection";
 import CTASection from "./components/CTASection";
 import Footer from "./components/Footer";
 import StayDetail from "./pages/StayDetail";
+import AllStays from "./pages/AllStays";
 
 function Home() {
   return (
@@ -37,6 +38,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/employee-login" element={<EmployeeLogin />} />
         <Route path="/accommodations/:id" element={<StayDetail />} />
+        <Route path="/stays" element={<AllStays />} />
+
         
         <Route
           path="/employee-home"

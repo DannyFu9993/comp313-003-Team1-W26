@@ -42,4 +42,18 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.get("/featured/list", async (req, res) => {
+  try {
+    const accommodations = await Accommodation.find({
+      status: "active",
+      isFeatured: true,
+    }).sort({ createdAt: -1 });
+
+    res.json(accommodations);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
 module.exports = router;
