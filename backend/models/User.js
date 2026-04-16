@@ -24,6 +24,12 @@ const userSchema = new mongoose.Schema(
       enum: ["customer", "employee"],
       default: "customer",
     },
+    favourites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Accommodation",
+      },
+    ],
   },
   {
     timestamps: true,

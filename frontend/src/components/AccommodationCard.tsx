@@ -1,19 +1,46 @@
 import { Link } from "react-router-dom";
-import { Star, MapPin } from "lucide-react";
+import { Star, MapPin, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Stay } from "@/data/mockStays";
 
-const AccommodationCard = ({ stay }: { stay: Stay }) => {
+interface AccommodationCardProps {
+  stay: Stay;
+  isFavourited?: boolean;
+  onToggleFavourite?: (id: string) => void;
+}
+
+const AccommodationCard = ({
+  stay,
+  isFavourited = false,
+  onToggleFavourite,
+}: AccommodationCardProps) => {
   return (
-    <div className="group bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-lg border transition-all duration-300 hover:-translate-y-1">
-      <div className="relative overflow-hidden aspect-[4/3]">
+    <div className="group bg-card rounded-2xl shadow-sm hover:shadow-lg border transition-all duration-300 hover:-translate-y-1">
+      <div className="relative overflow-hidden aspect-[4/3] rounded-t-2xl">
         <img
           src={stay.imageUrl || "https://placehold.co/400x300?text=No+Image"}
           alt={stay.title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
+        {onToggleFavourite && (
+          <button
+            type="button"
+            onClick={() => onToggleFavourite(stay._id)}
+            className="absolute top-3 left-3 z-10 inline-flex h-8 w-8 items-center justify-center bg-transparent p-0 select-none touch-manipulation outline-none hover:bg-transparent active:bg-transparent focus:bg-transparent focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent hover:[&>svg]:scale-110 hover:[&>svg]:text-rose-400 [-webkit-tap-highlight-color:transparent]"
+            aria-label={isFavourited ? "Remove from favourites" : "Add to favourites"}
+            aria-pressed={isFavourited}
+          >
+            <Heart
+              className={`h-6 w-6 drop-shadow-md transition-all ${
+                isFavourited
+                  ? "fill-rose-500 text-rose-500"
+                  : "fill-transparent text-white"
+              }`}
+            />
+          </button>
+        )}
         {stay.badge && (
-          <span className="absolute top-3 left-3 bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">
+          <span className="absolute top-3 right-3 bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">
             {stay.badge}
           </span>
         )}

@@ -3,15 +3,19 @@ import { useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AccommodationCard from "@/components/AccommodationCard";
-import { getAccommodations } from "@/services/api";
+import { getAccommodations, getFavourites, addFavourite, removeFavourite } from "@/services/api";
 import type { Stay } from "@/data/mockStays";
 
 const AllStays = () => {
   const [stays, setStays] = useState<Stay[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [favouriteIds, setFavouriteIds] = useState<Set<string>>(new Set());
   const [searchParams] = useSearchParams();
 
+  const isLoggedIn = Boolean(localStorage.getItem("token"));
+
+  // Load stays based on search filters
   useEffect(() => {
     const city = searchParams.get("city") || "";
     const checkIn = searchParams.get("checkIn") || "";
@@ -21,16 +25,58 @@ const AllStays = () => {
     setLoading(true);
     setError("");
 
-    getAccommodations({
-      city,
-      checkIn,
-      checkOut,
-      guests,
-    })
+    getAccommodations({ city, checkIn, checkOut, guests })
       .then((res) => setStays(res.data))
       .catch(() => setError("Failed to load stays."))
       .finally(() => setLoading(false));
   }, [searchParams]);
+
+  // Load current user's favourites if logged in
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    getFavourites()
+      .then((res) => {
+        const ids = new Set<string>(res.data.map((s: Stay) => s._id));
+        setFavouriteIds(ids);
+      })
+      .catch(() => {
+        // Not critical — heart buttons still render, just won't show saved state
+      });
+  }, [isLoggedIn]);
+
+  const handleToggleFavourite = async (id: string) => {
+    const wasFavourited = favouriteIds.has(id);
+
+    // Optimistic update
+    setFavouriteIds((prev) => {
+      const next = new Set(prev);
+      if (wasFavourited) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+
+    try {
+      if (wasFavourited) {
+        await removeFavourite(id);
+      } else {
+        await addFavourite(id);
+      }
+    } catch {
+      // Revert on failure
+      setFavouriteIds((prev) => {
+        const next = new Set(prev);
+        if (wasFavourited) {
+          next.add(id);
+        } else {
+          next.delete(id);
+        }
+        return next;
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -70,7 +116,12 @@ const AllStays = () => {
           {!loading && !error && stays.length > 0 && (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {stays.map((stay) => (
-                <AccommodationCard key={stay._id} stay={stay} />
+                <AccommodationCard
+                  key={stay._id}
+                  stay={stay}
+                  isFavourited={favouriteIds.has(stay._id)}
+                  onToggleFavourite={isLoggedIn ? handleToggleFavourite : undefined}
+                />
               ))}
             </div>
           )}
