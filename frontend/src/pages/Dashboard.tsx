@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AccommodationCard from "@/components/AccommodationCard";
+import { getFavourites, removeFavourite } from "@/services/api";
+import type { Stay } from "@/data/mockStays";
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
-  const [favorites, setFavorites] = useState([]);
-  const [loadingFavorites, setLoadingFavorites] = useState(true);
+  const [favourites, setFavourites] = useState<Stay[]>([]);
+  const [loadingFavourites, setLoadingFavourites] = useState(true);
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
@@ -15,10 +17,26 @@ const Dashboard = () => {
       setUser(JSON.parse(savedUser));
     }
 
-    // temporary mock until favorites API is connected
-    setFavorites([]);
-    setLoadingFavorites(false);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setLoadingFavourites(false);
+      return;
+    }
+
+    getFavourites()
+      .then((res) => setFavourites(res.data))
+      .catch(() => setFavourites([]))
+      .finally(() => setLoadingFavourites(false));
   }, []);
+
+  const handleToggleFavourite = async (id: string) => {
+    setFavourites((prev) => prev.filter((s) => s._id !== id));
+    try {
+      await removeFavourite(id);
+    } catch {
+      getFavourites().then((res) => setFavourites(res.data));
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -27,7 +45,7 @@ const Dashboard = () => {
       <main className="container mx-auto px-4 py-10">
         <section className="mb-8 rounded-3xl bg-white p-8 shadow-sm">
           <h1 className="text-3xl font-bold text-foreground">
-            Welcome{user?.name ? `, ${user.name}` : ""} 👋
+            Welcome{user?.username ? `, ${user.username}` : ""} 👋
           </h1>
           <p className="mt-2 text-muted-foreground">
             Explore your saved stays, recent searches, and account tools.
@@ -38,7 +56,7 @@ const Dashboard = () => {
           <section className="rounded-3xl bg-white p-6 shadow-sm">
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-2xl font-semibold text-foreground">
-                My Favorites
+                My Favourites
               </h2>
               <Link
                 to="/stays"
@@ -48,11 +66,11 @@ const Dashboard = () => {
               </Link>
             </div>
 
-            {loadingFavorites ? (
-              <p className="text-muted-foreground">Loading favorites...</p>
-            ) : favorites.length === 0 ? (
+            {loadingFavourites ? (
+              <p className="text-muted-foreground">Loading favourites...</p>
+            ) : favourites.length === 0 ? (
               <div className="rounded-2xl bg-slate-50 p-6 text-center">
-                <p className="mb-4 text-muted-foreground">No favorites yet.</p>
+                <p className="mb-4 text-muted-foreground">No favourites yet.</p>
                 <Link
                   to="/stays"
                   className="inline-flex rounded-xl bg-emerald-600 px-5 py-3 text-white hover:bg-emerald-700"
@@ -62,8 +80,13 @@ const Dashboard = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                {favorites.map((stay) => (
-                  <AccommodationCard key={stay._id} stay={stay} />
+                {favourites.map((stay) => (
+                  <AccommodationCard
+                    key={stay._id}
+                    stay={stay}
+                    isFavourited={true}
+                    onToggleFavourite={handleToggleFavourite}
+                  />
                 ))}
               </div>
             )}
