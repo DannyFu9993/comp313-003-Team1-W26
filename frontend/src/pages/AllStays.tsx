@@ -21,11 +21,13 @@ const AllStays = () => {
     const checkIn = searchParams.get("checkIn") || "";
     const checkOut = searchParams.get("checkOut") || "";
     const guests = searchParams.get("guests") || "";
+    const minBudget = searchParams.get("minBudget") || ""; // ADDED: Extract minBudget from URL
+    const maxBudget = searchParams.get("maxBudget") || ""; // ADDED: Extract maxBudget from URL
 
     setLoading(true);
     setError("");
 
-    getAccommodations({ city, checkIn, checkOut, guests })
+    getAccommodations({ city, checkIn, checkOut, guests, minBudget, maxBudget }) // ADDED: Pass budget params to API
       .then((res) => setStays(res.data))
       .catch(() => setError("Failed to load stays."))
       .finally(() => setLoading(false));
@@ -92,7 +94,9 @@ const AllStays = () => {
             {(searchParams.get("city") ||
               searchParams.get("checkIn") ||
               searchParams.get("checkOut") ||
-              searchParams.get("guests")) && (
+              searchParams.get("guests") ||
+              searchParams.get("minBudget") || // ADDED: Include budget in filter check
+              searchParams.get("maxBudget")) && ( // ADDED: Include budget in filter check
               <p className="mt-3 text-sm text-muted-foreground">
                 Showing results for your search filters.
               </p>

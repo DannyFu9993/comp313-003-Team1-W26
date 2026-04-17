@@ -1,5 +1,6 @@
-import { Search, MapPin, CalendarDays, Users } from "lucide-react";
+import { Search, MapPin, CalendarDays, Users, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +9,7 @@ const SearchBar = () => {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState("");
+  const [budgetRange, setBudgetRange] = useState([0, 500]); // ADDED: Budget slider state
   const navigate = useNavigate();
 
   const handleSearch = (e: FormEvent) => {
@@ -18,6 +20,10 @@ const SearchBar = () => {
     if (checkIn) params.set("checkIn", checkIn);
     if (checkOut) params.set("checkOut", checkOut);
     if (guests) params.set("guests", guests);
+    
+    // ADDED: Add budget parameters
+    if (budgetRange[0] > 0) params.set("minBudget", budgetRange[0].toString());
+    if (budgetRange[1] < 500) params.set("maxBudget", budgetRange[1].toString());
 
     const query = params.toString();
     navigate(`/stays${query ? `?${query}` : ""}`);
@@ -82,6 +88,24 @@ const SearchBar = () => {
           <Search className="h-5 w-5" />
           <span>Search</span>
         </Button>
+      </div>
+
+      {/* ADDED: Budget Slider Section */}
+      <div className="mt-4 rounded-2xl bg-slate-50 px-5 py-4">
+        <div className="flex items-center gap-3 mb-3">
+          <DollarSign className="h-5 w-5 shrink-0 text-emerald-500" />
+          <span className="text-base font-medium text-slate-700">
+            Budget per night: ${budgetRange[0]} - ${budgetRange[1] === 500 ? "500+" : budgetRange[1]}
+          </span>
+        </div>
+        <Slider
+          min={0}
+          max={500}
+          step={10}
+          value={budgetRange}
+          onValueChange={setBudgetRange}
+          className="w-full [&_[role=slider]]:h-5 [&_[role=slider]]:w-5 [&_[role=slider]]:bg-black [&_[role=slider]]:border-2 [&_[role=slider]]:border-black [&_.relative]:h-2 [&_.relative]:bg-blue-500"
+        />
       </div>
     </form>
   );
