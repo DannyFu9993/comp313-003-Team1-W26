@@ -7,7 +7,7 @@ const Accommodation = require("../models/Accommodation");
 // @access  Public
 router.get("/", async (req, res) => {
   try {
-    const { city, guests, checkIn, checkOut } = req.query;
+    const { city, guests, checkIn, checkOut, minBudget, maxBudget } = req.query; // ADDED: minBudget, maxBudget
     const filters = { status: "active" };
 
     if (city && String(city).trim()) {
@@ -17,6 +17,20 @@ router.get("/", async (req, res) => {
     if (guests && !Number.isNaN(Number(guests))) {
       filters.guests = { $gte: Number(guests) };
     }
+
+    // ADDED: Budget filter logic using pricePerNight
+    if (minBudget || maxBudget) {
+      filters.pricePerNight = {};
+      
+      if (minBudget && !Number.isNaN(Number(minBudget))) {
+        filters.pricePerNight.$gte = Number(minBudget);
+      }
+      
+      if (maxBudget && !Number.isNaN(Number(maxBudget))) {
+        filters.pricePerNight.$lte = Number(maxBudget);
+      }
+    }
+    // END ADDED
 
     // Lightweight date validation only; full availability model is not in current schema.
     if (checkIn && checkOut && new Date(checkOut) <= new Date(checkIn)) {
