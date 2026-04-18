@@ -55,14 +55,22 @@ router.post("/accommodations", auth, async (req, res) => {
       return res.status(403).json({ msg: "Access denied" });
     }
 
-    const { title, location, pricePerNight, propertyType, guests } = req.body;
+    const {
+      title, location, pricePerNight, propertyType, guests,
+      description, imageUrl, imageGallery, amenities,
+      bedrooms, beds, bathrooms,
+      cleaningFee, serviceFee, taxes,
+      checkIn, checkOut, cancellationPolicy,
+      externalUrl, isFeatured,
+    } = req.body;
 
     const newAcc = new Accommodation({
-      title,
-      location,
-      pricePerNight,
-      propertyType,
-      guests,
+      title, location, pricePerNight, propertyType, guests,
+      description, imageUrl, imageGallery, amenities,
+      bedrooms, beds, bathrooms,
+      cleaningFee, serviceFee, taxes,
+      checkIn, checkOut, cancellationPolicy,
+      externalUrl, isFeatured,
       createdBy: req.user.id,
     });
 
@@ -83,7 +91,15 @@ router.put("/accommodations/:id", auth, async (req, res) => {
       return res.status(403).json({ msg: "Access denied" });
     }
 
-    const { title, location, pricePerNight, propertyType, guests } = req.body;
+    const {
+      title, location, pricePerNight, propertyType, guests,
+      description, imageUrl, imageGallery, amenities,
+      bedrooms, beds, bathrooms,
+      cleaningFee, serviceFee, taxes,
+      checkIn, checkOut, cancellationPolicy,
+      externalUrl, isFeatured,
+    } = req.body;
+
     const query =
       String(req.user.role).toLowerCase() === "admin"
         ? { _id: req.params.id }
@@ -94,11 +110,17 @@ router.put("/accommodations/:id", auth, async (req, res) => {
       return res.status(404).json({ msg: "Accommodation not found" });
     }
 
-    if (title !== undefined) accommodation.title = title;
-    if (location !== undefined) accommodation.location = location;
-    if (pricePerNight !== undefined) accommodation.pricePerNight = pricePerNight;
-    if (propertyType !== undefined) accommodation.propertyType = propertyType;
-    if (guests !== undefined) accommodation.guests = guests;
+    const fields = {
+      title, location, pricePerNight, propertyType, guests,
+      description, imageUrl, imageGallery, amenities,
+      bedrooms, beds, bathrooms,
+      cleaningFee, serviceFee, taxes,
+      checkIn, checkOut, cancellationPolicy,
+      externalUrl, isFeatured,
+    };
+    for (const [key, val] of Object.entries(fields)) {
+      if (val !== undefined) accommodation[key] = val;
+    }
 
     const updated = await accommodation.save();
     res.json(updated);
