@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import SimilarAccommodations from "@/components/SimilarAccommodations";
 import { trackAccommodationView } from "@/services/recommendationService";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Star, MapPin, Wifi, BedDouble, Bath, Users } from "lucide-react";
+import { ArrowLeft, Mountain, Waves, Snowflake, Flame, Trees, UtensilsCrossed, Star, MapPin, Wifi, BedDouble, Bath, Users, PawPrint, Tent, Droplet, Dumbbell, Heater, Kayak, Cigarette, Cannabis, CircleParking, Utensils, Building, Monitor } from "lucide-react";
 import type { Stay } from "@/data/mockStays"; 
 
 const StayDetail = () => {
@@ -30,6 +30,8 @@ const StayDetail = () => {
         setLoading(false);
       }
     };
+
+    
 
     if (id) fetchStay();
   }, [id]);
@@ -60,6 +62,48 @@ const StayDetail = () => {
       </div>
     );
   }
+
+
+const amenityIcons: Record<string, React.ElementType[]> = {
+  Wifi: [Wifi],
+  "Mountain View": [Mountain],
+  "River View": [Waves],
+  "Bathroom Essentials": [Bath],
+  "Bathtub": [Bath],
+  "Indoor Fireplace": [Flame],
+  "Fire pit": [Flame],
+  "Fire Pit": [Flame],
+  "Hot water kettle": [UtensilsCrossed],
+  "Hot Water": [Droplet],
+  "Pets allowed": [PawPrint],
+  "Pets Allowed": [PawPrint],
+  AC: [Snowflake],
+  Heating: [Flame],
+  "Exercise Equipment": [Dumbbell],
+  "Shower Products": [Bath],
+  "Central Heating": [Heater],
+  "Hair Dryer": [Bath],
+  "Bedroom Essentials": [BedDouble],
+  "Free Resort Access": [Waves],
+  Hammock: [Tent],
+  "Private backyard": [Trees],
+  "Private Backyard": [Trees],
+  "BBQ Grill": [UtensilsCrossed],
+  "Kitchen Supplies": [UtensilsCrossed],
+  "Shared Indoor Pool": [Waves],
+  Kayak: [Kayak],
+  "Smoking Allowed": [Cigarette, Cannabis],
+  "Free Parking": [CircleParking],
+  "Breakfast": [Utensils],
+  "Balcony": [Trees],
+  "Lake Access": [Kayak],
+  "Kitchen": [UtensilsCrossed],
+  "Cooking basics": [UtensilsCrossed],
+  "Private rooftop": [Building],
+  "TV": [Monitor],
+
+};
+
 
   const subtotal = stay.pricePerNight ?? 0;
   const cleaningFee = stay.cleaningFee ?? 0;
@@ -162,22 +206,31 @@ const StayDetail = () => {
               </div>
             </div>
 
-            <div className="mb-8 rounded-3xl bg-white p-6 shadow-sm">
-              <h2 className="mb-4 text-2xl font-semibold text-foreground">
-                Amenities
-              </h2>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {(stay.amenities ?? []).map((amenity, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-3 rounded-2xl bg-slate-50 px-4 py-3 text-foreground"
-                  >
-                    <Wifi className="h-4 w-4 text-emerald-600" />
-                    <span>{amenity}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+           <div className="mb-8 rounded-3xl bg-white p-6 shadow-sm">
+  <h2 className="mb-4 text-2xl font-semibold text-foreground">
+    Amenities
+  </h2>
+
+  <div className="grid gap-3 sm:grid-cols-2">
+    {(stay.amenities ?? []).map((amenity, index) => {
+      const icons = amenityIcons[amenity] || [Wifi];
+
+      return (
+        <div
+          key={index}
+          className="flex items-center gap-3 rounded-2xl bg-slate-50 px-4 py-3 text-foreground"
+        >
+          <div className="flex items-center gap-1">
+            {icons.map((Icon, i) => (
+              <Icon key={i} className="h-4 w-4 text-emerald-600" />
+            ))}
+          </div>
+          <span>{amenity}</span>
+        </div>
+      );
+    })}
+  </div>
+</div>
 
             <div className="rounded-3xl bg-white p-6 shadow-sm">
               <h2 className="mb-4 text-2xl font-semibold text-foreground">
