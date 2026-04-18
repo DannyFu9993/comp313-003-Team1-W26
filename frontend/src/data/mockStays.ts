@@ -26,4 +26,6 @@ export interface Stay {
   cancellationPolicy?: string;
   externalUrl?: string;
   isFeatured?: boolean;
+  recommendationScore?: number;
+  matchReasons?: string[];
 }

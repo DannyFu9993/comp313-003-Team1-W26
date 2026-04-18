@@ -2,6 +2,8 @@ import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SimilarAccommodations from "@/components/SimilarAccommodations";
+import { trackAccommodationView } from "@/services/recommendationService";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Star, MapPin, Wifi, BedDouble, Bath, Users } from "lucide-react";
 import type { Stay } from "@/data/mockStays"; 
@@ -20,6 +22,7 @@ const StayDetail = () => {
         }
         const data = await response.json();
         setStay(data);
+        trackAccommodationView(String(data._id)).catch(() => {});
       } catch (error) {
         console.error("Error fetching stay:", error);
         setStay(null);
@@ -241,6 +244,8 @@ const StayDetail = () => {
             </div>
           </div>
         </div>
+
+        {id && <SimilarAccommodations accommodationId={id} />}
       </div>
 
       <Footer />
