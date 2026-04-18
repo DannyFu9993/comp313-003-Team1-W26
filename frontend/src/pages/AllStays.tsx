@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AccommodationCard from "@/components/AccommodationCard";
 import { getAccommodations, getFavourites, addFavourite, removeFavourite } from "@/services/api";
+import { trackSearchForRecommendations } from "@/services/recommendationService";
 import type { Stay } from "@/data/mockStays";
 
 const AllStays = () => {
@@ -28,7 +29,17 @@ const AllStays = () => {
     setError("");
 
     getAccommodations({ city, checkIn, checkOut, guests, minBudget, maxBudget }) // ADDED: Pass budget params to API
-      .then((res) => setStays(res.data))
+      .then((res) => {
+        setStays(res.data);
+        if (localStorage.getItem("token")) {
+          trackSearchForRecommendations({
+            city,
+            guests,
+            minBudget,
+            maxBudget,
+          }).catch(() => {});
+        }
+      })
       .catch(() => setError("Failed to load stays."))
       .finally(() => setLoading(false));
   }, [searchParams]);

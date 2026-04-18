@@ -3,6 +3,7 @@ import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import FeaturedStays from "./components/FeaturedStays";
+import RecommendationSection from "./components/RecommendationSection";
 import BenefitsSection from "./components/BenefitsSection";
 import CTASection from "./components/CTASection";
 import Footer from "./components/Footer";
@@ -16,6 +17,7 @@ function Home() {
       <Navbar />
       <Hero />
       <FeaturedStays />
+      <RecommendationSection />
       <BenefitsSection />
       <CTASection />
       <Footer />
