@@ -3,10 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, Leaf, UserCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 
+
 type User = {
   name?: string;
   username?: string;
   email?: string;
+  profileImage?: string;
 };
 
 const Navbar = () => {
@@ -67,27 +69,54 @@ const Navbar = () => {
           </Link>
         </div>
 
-        <div className="group relative rounded-2xl border border-transparent bg-card shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-[0_10px_30px_rgba(16,185,129,0.35)] hover:border-emerald-400/50">
-          {user ? (
-            <Link
-              to="/dashboard"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border bg-white text-sm font-semibold text-emerald-700 shadow-sm transition hover:shadow-md"
-              aria-label="Go to dashboard"
-              title="Dashboard"
-            >
-              {displayInitial}
-            </Link>
-          ) : (
-            <>
-              <Button variant="ghost" asChild>
-                <Link to="/login">Login</Link>
-              </Button>
-              <Button asChild>
-                <Link to="/register">Create Account</Link>
-              </Button>
-            </>
-          )}
-        </div>
+        <div className="hidden md:flex items-center gap-3">
+  {user ? (
+ <div className="group relative">
+  <button
+    type="button"
+    className="relative h-12 w-12 overflow-hidden rounded-full border border-white/60 bg-white shadow-sm transition hover:shadow-md"
+    aria-label="Open profile menu"
+    title="Profile menu"
+  >
+    {user?.profileImage ? (
+      <img
+        src={user.profileImage}
+        alt="Profile"
+        className="absolute inset-0 h-full w-full object-cover object-center"
+      />
+    ) : (
+      <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-emerald-700">
+        {displayInitial}
+      </span>
+    )}
+  </button>
+
+      <div className="invisible absolute right-0 top-14 z-50 w-44 translate-y-2 rounded-2xl border bg-white p-2 opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+        <Link
+          to="/dashboard"
+          className="block rounded-xl px-4 py-3 text-sm font-medium text-foreground transition hover:bg-slate-100"
+        >
+          Dashboard
+        </Link>
+        <Link
+          to="/profile"
+          className="block rounded-xl px-4 py-3 text-sm font-medium text-foreground transition hover:bg-slate-100"
+        >
+          Profile
+        </Link>
+      </div>
+    </div>
+  ) : (
+    <>
+      <Button variant="ghost" asChild>
+        <Link to="/login">Login</Link>
+      </Button>
+      <Button asChild>
+        <Link to="/register">Create Account</Link>
+      </Button>
+    </>
+  )}
+</div>
 
         <button
           className="text-foreground md:hidden"

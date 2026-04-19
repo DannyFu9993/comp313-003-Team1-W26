@@ -10,6 +10,7 @@ import Footer from "./components/Footer";
 import StayDetail from "./pages/StayDetail";
 import AllStays from "./pages/AllStays";
 import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
 
 function Home() {
   return (
@@ -43,6 +44,7 @@ function App() {
         <Route path="/accommodations/:id" element={<StayDetail />} />
         <Route path="/stays" element={<AllStays />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/profile" element={<Profile />} />
         <Route
           path="/admin-dashboard"
           element={
