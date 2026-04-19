@@ -100,9 +100,9 @@ const Dashboard = () => {
                     className="h-20 w-20 object-contain"
                     />
                     </h1>
-                    <p className="mt-1 text-sm text-white/90">
+                    <p className="mt-2 text-sm text-white font-bold">
                       We hope you enjoy your next adventure with Travelo! 
-                      Explore to find personalized recommendations, manage your favourites, and discover new stays that match your travel style. Happy travels!
+                      Happy travels!
                     </p>
                   </div>
                 </div>

@@ -24,7 +24,7 @@ const Hero = () => {
           </h1>
 
           <p className="mx-auto mb-10 max-w-3xl text-lg font-light text-white/90 md:text-2xl">
-            Discover comfortable, budget-friendly accommodations with no hidden fees.
+            Discover hand picked accommodations from different platforms. Comfortable, budget-friendly accommodations with no hidden fees.
             Your next adventure starts here.
           </p>
 
