@@ -16,6 +16,7 @@ import AccommodationCard from "@/components/AccommodationCard";
 import { getFavourites, removeFavourite } from "@/services/api";
 import type { Stay } from "@/data/mockStays";
 import road1 from "@/assets/road1.jpg";
+import emoji from "@/assets/emojitraveler.gif";
 
 type UserType = {
   username?: string;
@@ -91,11 +92,17 @@ const Dashboard = () => {
                     {userInitial}
                   </div>
                   <div>
-                    <h1 className="text-3xl font-bold">
-                      Welcome, {displayName} 👋
+                    <h1 className="flex items-center gap-3 text-3xl font-bold">
+                    Welcome, {displayName}
+                    <img
+                    src={emoji}
+                    alt="traveler"
+                    className="h-20 w-20 object-contain"
+                    />
                     </h1>
                     <p className="mt-1 text-sm text-white/90">
-                      Explore your saved stays, recent searches, and account tools.
+                      We hope you enjoy your next adventure with Travelo! 
+                      Explore to find personalized recommendations, manage your favourites, and discover new stays that match your travel style. Happy travels!
                     </p>
                   </div>
                 </div>
