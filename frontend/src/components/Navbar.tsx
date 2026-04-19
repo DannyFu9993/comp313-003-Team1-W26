@@ -1,53 +1,187 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Leaf } from "lucide-react";
-import { useState } from "react";
+import { Menu, X, Leaf, UserCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+
+
+type User = {
+  name?: string;
+  username?: string;
+  email?: string;
+  profileImage?: string;
+};
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch {
+        setUser(null);
+      }
+    }
+  }, []);
+
+  const displayInitial =
+    user?.name?.charAt(0).toUpperCase() ||
+    user?.username?.charAt(0).toUpperCase() ||
+    user?.email?.charAt(0).toUpperCase() ||
+    "U";
 
   return (
-    <nav className="sticky top-0 z-50 bg-card/90 backdrop-blur-md border-b">
-      <div className="container mx-auto flex items-center justify-between py-4 px-4">
+    <nav className="sticky top-0 z-50 border-b bg-card/90 backdrop-blur-md">
+      <div className="container mx-auto flex items-center justify-between px-4 py-4">
         <Link to="/" className="flex items-center gap-2">
           <Leaf className="h-7 w-7 text-primary" />
-          <span className="text-2xl font-display font-bold text-foreground tracking-tight">Travelo</span>
+          <span className="text-2xl font-display font-bold tracking-tight text-foreground">
+            Travelo
+          </span>
         </Link>
 
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-8">
-          <Link to="/" className="text-sm font-medium text-foreground hover:text-primary transition-colors">Home</Link>
-          <Link to="/stays" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Stays</Link>
-          <Link to="/about" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">About</Link>
-          <Link to="/contact" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Contact</Link>
+        <div className="hidden items-center gap-8 md:flex">
+          <Link
+            to="/"
+            className="text-sm font-medium text-foreground transition-colors hover:text-primary"
+          >
+            Home
+          </Link>
+          <Link
+            to="/stays"
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+          >
+            Stays
+          </Link>
+          <Link
+            to="/about"
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+          >
+            About
+          </Link>
+          <Link
+            to="/contact"
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+          >
+            Contact
+          </Link>
         </div>
 
         <div className="hidden md:flex items-center gap-3">
-          <Button variant="ghost" asChild>
-            <Link to="/login">Login</Link>
-          </Button>
-          <Button asChild>
-            <Link to="/register">Create Account</Link>
-          </Button>
-        </div>
+  {user ? (
+ <div className="group relative">
+  <button
+    type="button"
+    className="relative h-12 w-12 overflow-hidden rounded-full border border-white/60 bg-white shadow-sm transition hover:shadow-md"
+    aria-label="Open profile menu"
+    title="Profile menu"
+  >
+    {user?.profileImage ? (
+      <img
+        src={user.profileImage}
+        alt="Profile"
+        className="absolute inset-0 h-full w-full object-cover object-center"
+      />
+    ) : (
+      <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-emerald-700">
+        {displayInitial}
+      </span>
+    )}
+  </button>
 
-        {/* Mobile toggle */}
-        <button className="md:hidden text-foreground" onClick={() => setOpen(!open)}>
+      <div className="invisible absolute right-0 top-14 z-50 w-44 translate-y-2 rounded-2xl border bg-white p-2 opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+        <Link
+          to="/dashboard"
+          className="block rounded-xl px-4 py-3 text-sm font-medium text-foreground transition hover:bg-slate-100"
+        >
+          Dashboard
+        </Link>
+        <Link
+          to="/profile"
+          className="block rounded-xl px-4 py-3 text-sm font-medium text-foreground transition hover:bg-slate-100"
+        >
+          Profile
+        </Link>
+      </div>
+    </div>
+  ) : (
+    <>
+      <Button variant="ghost" asChild>
+        <Link to="/login">Login</Link>
+      </Button>
+      <Button asChild>
+        <Link to="/register">Create Account</Link>
+      </Button>
+    </>
+  )}
+</div>
+
+        <button
+          className="text-foreground md:hidden"
+          onClick={() => setOpen(!open)}
+        >
           {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>
 
-      {/* Mobile menu */}
       {open && (
-        <div className="md:hidden bg-card border-b px-4 pb-4 space-y-3 animate-in slide-in-from-top-2">
-          <Link to="/" className="block text-sm font-medium py-2 text-foreground" onClick={() => setOpen(false)}>Home</Link>
-          <Link to="/stays" className="block text-sm font-medium py-2 text-muted-foreground" onClick={() => setOpen(false)}>Stays</Link>
-          <Link to="/about" className="block text-sm font-medium py-2 text-muted-foreground" onClick={() => setOpen(false)}>About</Link>
-          <Link to="/contact" className="block text-sm font-medium py-2 text-muted-foreground" onClick={() => setOpen(false)}>Contact</Link>
-          <div className="flex gap-3 pt-2">
-            <Button variant="ghost" className="flex-1" asChild><Link to="/login">Login</Link></Button>
-            <Button className="flex-1" asChild><Link to="/register">Create Account</Link></Button>
-          </div>
+        <div className="animate-in slide-in-from-top-2 space-y-3 border-b bg-card px-4 pb-4 md:hidden">
+          <Link
+            to="/"
+            className="block py-2 text-sm font-medium text-foreground"
+            onClick={() => setOpen(false)}
+          >
+            Home
+          </Link>
+          <Link
+            to="/stays"
+            className="block py-2 text-sm font-medium text-muted-foreground"
+            onClick={() => setOpen(false)}
+          >
+            Stays
+          </Link>
+          <Link
+            to="/about"
+            className="block py-2 text-sm font-medium text-muted-foreground"
+            onClick={() => setOpen(false)}
+          >
+            About
+          </Link>
+          <Link
+            to="/contact"
+            className="block py-2 text-sm font-medium text-muted-foreground"
+            onClick={() => setOpen(false)}
+          >
+            Contact
+          </Link>
+
+          {user ? (
+            <Link
+              to="/dashboard"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 text-foreground"
+            >
+              <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-sm font-semibold text-white">
+                {displayInitial}
+              </div>
+              <span className="text-sm font-medium">My Dashboard</span>
+            </Link>
+          ) : (
+            <div className="flex gap-3 pt-2">
+              <Button variant="ghost" className="flex-1" asChild>
+                <Link to="/login" onClick={() => setOpen(false)}>
+                  Login
+                </Link>
+              </Button>
+              <Button className="flex-1" asChild>
+                <Link to="/register" onClick={() => setOpen(false)}>
+                  Create Account
+                </Link>
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </nav>
