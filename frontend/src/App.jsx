@@ -12,6 +12,7 @@ import AllStays from "./pages/AllStays";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import About from "./pages/About";
+import Contact from "./pages/Contact";
 
 function Home() {
   return (
@@ -47,6 +48,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/about" element={<About/>} />
+        <Route path="/contact" element={<Contact />} />
         <Route
           path="/admin-dashboard"
           element={

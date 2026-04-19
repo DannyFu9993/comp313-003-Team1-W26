@@ -24,6 +24,30 @@ const userSchema = new mongoose.Schema(
       enum: ["customer", "employee"],
       default: "customer",
     },
+    preferredDestination: {
+  type: String,
+  default: "",
+},
+budgetRange: {
+  type: String,
+  default: "",
+},
+favoriteStayType: {
+  type: String,
+  default: "",
+},
+travelStyle: {
+  type: String,
+  default: "",
+},
+bio: {
+  type: String,
+  default: "",
+},
+profileImage: {
+  type: String,
+  default: "",
+},
     favourites: [
       {
         type: mongoose.Schema.Types.ObjectId,

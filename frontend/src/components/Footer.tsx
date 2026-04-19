@@ -73,7 +73,7 @@ const Footer = () => {
               Contact
             </h4>
             <div className="space-y-2 text-sm">
-              <p>hello@travelo.com</p>
+              <p>travelo.travel.ca@gmail.com</p>
               <p>+1 (555) 123-4567</p>
             </div>
           </div>

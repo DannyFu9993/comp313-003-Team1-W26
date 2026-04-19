@@ -21,11 +21,16 @@ const employeeRoutes = require("./routes/employee");
 const accommodationRoutes = require("./routes/accommodations");
 const userRoutes = require("./routes/user");
 const recommendationRoutes = require("./routes/recommendations");
+const contactRoutes = require("./routes/contact");
+
+
+app.use("/api/contact", contactRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/employee", employeeRoutes);
 app.use("/api/accommodations", accommodationRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/recommendations", recommendationRoutes);
+
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {

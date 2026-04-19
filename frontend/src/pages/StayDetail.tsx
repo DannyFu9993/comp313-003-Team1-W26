@@ -12,6 +12,8 @@ const StayDetail = () => {
   const { id } = useParams();
   const [stay, setStay] = useState<Stay | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+const [showAllImages, setShowAllImages] = useState(false);
 
   useEffect(() => {
     const fetchStay = async () => {
@@ -112,6 +114,9 @@ const amenityIcons: Record<string, React.ElementType[]> = {
   const total =
     stay.totalPrice ?? subtotal + cleaningFee + serviceFee + taxes;
 
+    const images = stay.imageGallery ?? [];
+const previewImages = images.slice(0, 3);
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -149,52 +154,109 @@ const amenityIcons: Record<string, React.ElementType[]> = {
           )}
         </div>
 
-        <div className="mb-10 grid gap-4 md:grid-cols-3">
-          <div className="md:col-span-2 overflow-hidden rounded-3xl bg-slate-100">
-            {stay.imageUrl ? (
-              <img
-                src={stay.imageUrl}
-                alt={stay.title}
-                className="h-[420px] w-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = "none";
-                  (e.target as HTMLImageElement).parentElement!.classList.add("flex", "items-center", "justify-center");
-                }}
-              />
-            ) : (
-              <div className="h-[420px] w-full flex flex-col items-center justify-center text-slate-400 gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span className="text-sm">No image available</span>
-              </div>
-            )}
-          </div>
+       <div className="mb-10 grid gap-4 md:grid-cols-3">
+  <div className="md:col-span-2 overflow-hidden rounded-3xl bg-slate-100">
+    {stay.imageUrl ? (
+      <img
+        src={stay.imageUrl}
+        alt={stay.title}
+        className="h-[420px] w-full cursor-pointer object-cover"
+        onClick={() => setSelectedImage(stay.imageUrl)}
+        onError={(e) => {
+          (e.target as HTMLImageElement).style.display = "none";
+          (e.target as HTMLImageElement).parentElement!.classList.add(
+            "flex",
+            "items-center",
+            "justify-center"
+          );
+        }}
+      />
+    ) : (
+      <div className="flex h-[420px] w-full flex-col items-center justify-center gap-3 text-slate-400">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-16 w-16"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1}
+            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+          />
+        </svg>
+        <span className="text-sm">No image available</span>
+      </div>
+    )}
+  </div>
 
-          <div className="grid gap-4">
-            {(stay.imageGallery ?? []).length > 0
-              ? (stay.imageGallery ?? []).slice(0, 2).map((img, index) => (
-                  <div key={index} className="overflow-hidden rounded-2xl bg-slate-100">
-                    <img
-                      src={img}
-                      alt={`${stay.title} ${index + 1}`}
-                      className="h-[200px] w-full object-cover"
-                      onError={(e) => {
-                        const el = e.target as HTMLImageElement;
-                        el.style.display = "none";
-                      }}
-                    />
-                  </div>
-                ))
-              : [0, 1].map((i) => (
-                  <div key={i} className="overflow-hidden rounded-2xl bg-slate-100 h-[200px] flex items-center justify-center text-slate-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                ))}
-          </div>
+  <div className="grid gap-4">
+    {images.length > 0 ? (
+      previewImages.map((img, index) => (
+        <div
+          key={index}
+          className="group relative overflow-hidden rounded-2xl bg-slate-100 cursor-pointer"
+          onClick={() => setSelectedImage(img)}
+        >
+          <img
+            src={img}
+            alt={`${stay.title} ${index + 1}`}
+            className="h-[200px] w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            onError={(e) => {
+              const el = e.target as HTMLImageElement;
+              el.style.display = "none";
+            }}
+          />
+
+          {index === 2 && images.length > 3 && (
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowAllImages(true);
+              }}
+              className="absolute inset-0 flex items-center justify-center bg-black/55 text-sm font-semibold text-white"
+            >
+              +{images.length - 3} more
+            </div>
+          )}
         </div>
+      ))
+    ) : (
+      [0, 1, 2].map((i) => (
+        <div
+          key={i}
+          className="flex h-[200px] items-center justify-center overflow-hidden rounded-2xl bg-slate-100 text-slate-400"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-10 w-10"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1}
+              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
+        </div>
+      ))
+    )}
+
+    {images.length > 3 && (
+      <button
+        onClick={() => setShowAllImages(true)}
+        className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-foreground transition hover:bg-slate-100"
+      >
+        View all photos
+      </button>
+    )}
+  </div>
+</div>
 
         <div className="grid gap-10 lg:grid-cols-[2fr_1fr]">
           <div>
@@ -325,6 +387,40 @@ const amenityIcons: Record<string, React.ElementType[]> = {
 
         {id && <SimilarAccommodations accommodationId={id} />}
       </div>
+      {showAllImages && (
+  <div
+    className="fixed inset-0 z-50 overflow-y-auto bg-black/90 p-6"
+    onClick={() => setShowAllImages(false)}
+  >
+    <div className="mx-auto grid max-w-6xl gap-4 sm:grid-cols-2 md:grid-cols-3">
+      {images.map((img, index) => (
+        <img
+          key={index}
+          src={img}
+          alt={`Gallery ${index + 1}`}
+          className="h-[250px] w-full cursor-pointer rounded-xl object-cover transition hover:scale-[1.02]"
+          onClick={(e) => {
+            e.stopPropagation();
+            setSelectedImage(img);
+          }}
+        />
+      ))}
+    </div>
+  </div>
+)}
+
+{selectedImage && (
+  <div
+    className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4"
+    onClick={() => setSelectedImage(null)}
+  >
+    <img
+      src={selectedImage}
+      alt="Preview"
+      className="max-h-[90vh] max-w-[90vw] rounded-2xl object-contain shadow-2xl"
+    />
+  </div>
+)}
 
       <Footer />
     </div>
