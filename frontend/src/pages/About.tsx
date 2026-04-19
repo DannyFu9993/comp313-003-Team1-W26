@@ -75,6 +75,42 @@ const About = () => {
         </div>
         </section>
 
+        
+        {/* Logo strip */}
+        <section className="py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-3xl text-center">
+              <h2 className="text-3xl font-bold text-foreground">
+                Booking platforms represented in our stay links
+              </h2>
+              <p className="mt-4 text-muted-foreground leading-relaxed">
+                Travelo helps users explore stays that may connect to widely used
+                booking platforms for further viewing and booking.
+              </p>
+            </div>
+
+            <div className="relative mt-12 overflow-hidden rounded-3xl border bg-white py-8 shadow-sm">
+              <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-background to-transparent z-10" />
+              <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-background to-transparent z-10" />
+
+              <div className="marquee flex min-w-max items-center gap-16">
+                {bookingLogos.map((logo, index) => (
+                  <div
+                    key={`${logo.name}-${index}`}
+                    className="flex h-14 min-w-[140px] items-center justify-center opacity-70 hover:opacity-100 hover:scale-105 transition-all duration-300"
+                  >
+                    <img
+                      src={logo.src}
+                      alt={logo.name}
+                      className="max-h-10 w-auto object-contain"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Intro / Mission */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
@@ -129,40 +165,6 @@ const About = () => {
           </div>
         </section>
 
-        {/* Logo strip */}
-        <section className="py-16">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-3xl text-center">
-              <h2 className="text-3xl font-bold text-foreground">
-                Booking platforms represented in our stay links
-              </h2>
-              <p className="mt-4 text-muted-foreground leading-relaxed">
-                Travelo helps users explore stays that may connect to widely used
-                booking platforms for further viewing and booking.
-              </p>
-            </div>
-
-            <div className="relative mt-12 overflow-hidden rounded-3xl border bg-white py-8 shadow-sm">
-              <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-background to-transparent z-10" />
-              <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-background to-transparent z-10" />
-
-              <div className="marquee flex min-w-max items-center gap-16">
-                {bookingLogos.map((logo, index) => (
-                  <div
-                    key={`${logo.name}-${index}`}
-                    className="flex h-14 min-w-[140px] items-center justify-center opacity-70 hover:opacity-100 hover:scale-105 transition-all duration-300"
-                  >
-                    <img
-                      src={logo.src}
-                      alt={logo.name}
-                      className="max-h-10 w-auto object-contain"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
 
 
         {/* What we offer */}
