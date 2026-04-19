@@ -12,11 +12,16 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ message: "All fields are required." });
     }
 
-    await resend.emails.send({
+    if (!process.env.CONTACT_RECEIVER_EMAIL) {
+      console.error("Missing CONTACT_RECEIVER_EMAIL in environment.");
+      return res.status(500).json({ message: "Server email configuration is missing." });
+    }
+
+    const response = await resend.emails.send({
       from: "Travelo <onboarding@resend.dev>",
       to: process.env.CONTACT_RECEIVER_EMAIL,
       subject: `Travelo Contact: ${subject}`,
-      reply_to: email,
+      replyTo: email,
       html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.6;">
           <h2>New Contact Form Message</h2>
@@ -29,10 +34,14 @@ router.post("/", async (req, res) => {
       `,
     });
 
+    console.log("RESEND RESPONSE:", response);
+
     return res.status(200).json({ message: "Message sent successfully." });
   } catch (error) {
-    console.error("Contact form error:", error);
-    return res.status(500).json({ message: "Failed to send message." });
+    console.error("CONTACT ROUTE ERROR:", error);
+    return res.status(500).json({
+      message: error?.message || "Failed to send message.",
+    });
   }
 });
 
