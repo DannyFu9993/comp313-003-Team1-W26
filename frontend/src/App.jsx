@@ -11,6 +11,7 @@ import StayDetail from "./pages/StayDetail";
 import AllStays from "./pages/AllStays";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
+import About from "./pages/About";
 
 function Home() {
   return (
@@ -45,6 +46,7 @@ function App() {
         <Route path="/stays" element={<AllStays />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/about" element={<About/>} />
         <Route
           path="/admin-dashboard"
           element={
