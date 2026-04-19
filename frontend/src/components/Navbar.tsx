@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Leaf, UserCircle } from "lucide-react";
 import { useEffect, useState } from "react";
+import TraveloMascot from "@/assets/birdotravelo.png";
 
 
 type User = {
@@ -36,7 +37,11 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 border-b bg-card/90 backdrop-blur-md">
       <div className="container mx-auto flex items-center justify-between px-4 py-4">
         <Link to="/" className="flex items-center gap-2">
-          <Leaf className="h-7 w-7 text-primary" />
+          <img
+  src={TraveloMascot}
+  alt="Travelo mascot"
+  className="h-20 w-20 object-contain transition-transform duration-300 hover:scale-110"
+/>
           <span className="text-2xl font-display font-bold tracking-tight text-foreground">
             Travelo
           </span>
@@ -45,25 +50,25 @@ const Navbar = () => {
         <div className="hidden items-center gap-8 md:flex">
           <Link
             to="/"
-            className="text-sm font-medium text-foreground transition-colors hover:text-primary"
+            className="group relative px-3 py-1.5 rounded-md text-base font-semibold text-muted-foreground transition-all duration-300 hover:text-emerald-600 hover:bg-emerald-50/60 hover:-translate-y-[1px]"
           >
             Home
           </Link>
           <Link
             to="/stays"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+            className="group relative px-3 py-1.5 rounded-md text-base font-semibold text-muted-foreground transition-all duration-300 hover:text-emerald-600 hover:bg-emerald-50/60 hover:-translate-y-[1px]"
           >
             Stays
           </Link>
           <Link
             to="/about"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+           className="group relative px-3 py-1.5 rounded-md text-base font-semibold text-muted-foreground transition-all duration-300 hover:text-emerald-600 hover:bg-emerald-50/60 hover:-translate-y-[1px]"
           >
             About
           </Link>
           <Link
             to="/contact"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+          className="group relative px-3 py-1.5 rounded-md text-base font-semibold text-muted-foreground transition-all duration-300 hover:text-emerald-600 hover:bg-emerald-50/60 hover:-translate-y-[1px]"
           >
             Contact
           </Link>
