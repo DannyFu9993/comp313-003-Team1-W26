@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Wallet, MapPinned, Heart, Building2, GraduationCap, Compass, Globe2 } from "lucide-react";
 import TraveloMascot from "@/assets/birdotravelo.png";
+import Agodalogo from "@/assets/Agoda_logo.png";
 
 const bookingLogos = [
   {
@@ -14,7 +15,7 @@ const bookingLogos = [
   },
   {
     name: "Agoda",
-    src: "https://www.vecteezy.com/png/55138484-agoda-logo-free-download-agoda-logo",
+    src: Agodalogo,
   },
   {
     name: "Airbnb",
@@ -26,7 +27,7 @@ const bookingLogos = [
   },
   {
     name: "Agoda",
-    src: "https://bookoncloud.com/channel-manager/",
+    src: Agodalogo,
   },
 ];
 
