@@ -1,0 +1,28 @@
+services:
+  # Backend API
+  - type: web
+    name: travelo-backend
+    env: node
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && node server.js
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: CONTACT_RECEIVER_EMAIL
+        sync: false
+      - key: NODE_ENV
+        value: production
+
+  # Frontend
+  - type: web
+    name: travelo-frontend
+    env: node
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npm run preview
+    envVars:
+      - key: VITE_API_URL
+        value: https://travelo-backend.onrender.com
