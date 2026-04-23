@@ -58,7 +58,7 @@ function Register() {
     e.preventDefault();
 
     const newErrors = validate();
-
+//
     if (Object.keys(newErrors).length === 0) {
       try {
         const response = await fetch(getApiUrl("/api/auth/register"),
