@@ -1,7 +1,14 @@
 import axios from "axios";
 
+// Use environment variable if set, otherwise use relative path for production
+// Local: http://localhost:5001/api
+// Production: /api (same domain as frontend)
+const baseURL = import.meta.env.VITE_API_URL 
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : "/api";
+
 const api = axios.create({
-  baseURL: "http://localhost:5001/api",
+  baseURL,
 });
 
 // Attach JWT token to every request if one is stored
