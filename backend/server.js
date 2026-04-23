@@ -15,7 +15,7 @@ mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected successfully'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// API Routes
+// API Routes - these must come BEFORE static file serving
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/accommodations', require('./routes/accommodations'));
 app.use('/api/employee', require('./routes/employee'));
@@ -23,17 +23,19 @@ app.use('/api/user', require('./routes/user'));
 app.use('/api/recommendations', require('./routes/recommendations'));
 app.use('/api/contact', require('./routes/contact'));
 
-// Production: Serve static files from frontend build
-// This allows the backend to serve the React app in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/dist')));
-  
-  // Catch-all: serve index.html for any route not handled by API
-  // This enables React Router to work properly
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
-  });
-}
+// Serve static files from frontend build
+// Path: backend/../frontend/dist
+const frontendPath = path.join(__dirname, '../frontend/dist');
+console.log('Serving static files from:', frontendPath);
+app.use(express.static(frontendPath));
+
+// Catch-all route: serve index.html for any route not handled by API
+// This enables React Router to work properly
+app.get('*', (req, res) => {
+  const indexPath = path.join(frontendPath, 'index.html');
+  console.log('Serving index.html from:', indexPath);
+  res.sendFile(indexPath);
+});
 
 // Start server
 const PORT = process.env.PORT || 5001;
