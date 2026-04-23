@@ -31,7 +31,8 @@ app.use(express.static(frontendPath));
 
 // Catch-all route: serve index.html for any route not handled by API
 // This enables React Router to work properly
-app.get('*', (req, res) => {
+// Changed from app.get('*') to app.get('/*') for Express 5 compatibility
+app.get('/*', (req, res) => {
   const indexPath = path.join(frontendPath, 'index.html');
   console.log('Serving index.html from:', indexPath);
   res.sendFile(indexPath);
