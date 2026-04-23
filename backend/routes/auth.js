@@ -100,9 +100,12 @@ router.post("/login", async (req, res) => {
       },
     };
 
+    // FIXED: Use environment variable for JWT secret
+    const jwtSecret = process.env.JWT_SECRET || 'fallback_secret_key_change_in_production';
+    
     jwt.sign(
       payload,
-      "your_jwt_secret", // Replace with a real secret in a config file
+      jwtSecret,
       { expiresIn: 3600 },
       (err, token) => {
         if (err) throw err;
