@@ -29,10 +29,17 @@ console.log('Serving static files from:', frontendPath);
 app.use(express.static(frontendPath));
 
 // Catch-all route: serve index.html for any route not handled by API
-// Using regex pattern for Express 5 compatibility
-app.use((req, res) => {
+// This must be AFTER API routes and static files
+// Only catch routes that don't start with /api
+app.get(/^(?!\/api).*/, (req, res) => {
   const indexPath = path.join(frontendPath, 'index.html');
-  res.sendFile(indexPath);
+  console.log('Serving index.html for route:', req.path);
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      console.error('Error serving index.html:', err);
+      res.status(500).send('Error loading page');
+    }
+  });
 });
 
 // Start server
