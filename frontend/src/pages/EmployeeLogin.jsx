@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { getApiUrl } from "../config"; // ADD THIS IMPORT
 import "./EmployeeLogin.css";
 
 const EmployeeLogin = () => {
@@ -19,7 +20,8 @@ const EmployeeLogin = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5001/api/auth/login", {
+      // CHANGED: Use getApiUrl instead of hardcoded localhost
+      const res = await axios.post(getApiUrl("/api/auth/login"), {
         email,
         password,
       });
@@ -46,45 +48,45 @@ const EmployeeLogin = () => {
   };
 
   return (
-  <div className="login-container">
-    <div className="login-card">
-      <h2>Employee Login</h2>
+    <div className="login-container">
+      <div className="login-card">
+        <h2>Employee Login</h2>
 
-      <form onSubmit={onSubmit}>
-        {error && <p className="error-message">{error}</p>}
+        <form onSubmit={onSubmit}>
+          {error && <p className="error-message">{error}</p>}
 
-        <div className="form-group">
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={email}
-            onChange={onChange}
-            required
-          />
-        </div>
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              name="email"
+              value={email}
+              onChange={onChange}
+              required
+            />
+          </div>
 
-        <div className="form-group">
-          <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            value={password}
-            onChange={onChange}
-            required
-          />
-        </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              name="password"
+              value={password}
+              onChange={onChange}
+              required
+            />
+          </div>
 
-        <button type="submit" className="login-button">
-          Login
-        </button>
-      </form>
+          <button type="submit" className="login-button">
+            Login
+          </button>
+        </form>
 
-      <p className="login-footer">
-        Not an employee? <a href="/login">User login</a>
-      </p>
+        <p className="login-footer">
+          Not an employee? <a href="/login">User login</a>
+        </p>
+      </div>
     </div>
-  </div>
   );
 };
 

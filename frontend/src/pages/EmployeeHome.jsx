@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import Footer from "@/components/Footer";
 import AccommodationCard from "@/components/AccommodationCard";
 import stay1 from "@/assets/stay-1.jpg";
+import { getApiUrl } from "../config"; // ADDED: Import config helper
 
 const AMENITY_OPTIONS = [
   "WiFi", "Pool", "Kitchen", "Parking", "Air Conditioning",
@@ -58,7 +59,7 @@ const EmployeeHome = () => {
         return;
       }
       const res = await axios.get(
-        "http://localhost:5001/api/employee/accommodations",
+        getApiUrl("/api/employee/accommodations"), // CHANGED: Use getApiUrl
         { headers: { "x-auth-token": token } },
       );
       setAccommodations(res.data);
@@ -106,13 +107,13 @@ const EmployeeHome = () => {
       const payload = buildPayload();
       if (editingId) {
         await axios.put(
-          `http://localhost:5001/api/employee/accommodations/${editingId}`,
+          getApiUrl(`/api/employee/accommodations/${editingId}`), // CHANGED: Use getApiUrl
           payload,
           { headers: { "x-auth-token": token } },
         );
       } else {
         await axios.post(
-          "http://localhost:5001/api/employee/accommodations",
+          getApiUrl("/api/employee/accommodations"), // CHANGED: Use getApiUrl
           payload,
           { headers: { "x-auth-token": token } },
         );
@@ -157,7 +158,7 @@ const EmployeeHome = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.patch(
-        `http://localhost:5001/api/employee/accommodations/${id}/deactivate`,
+        getApiUrl(`/api/employee/accommodations/${id}/deactivate`), // CHANGED: Use getApiUrl
         {},
         { headers: { "x-auth-token": token } },
       );
@@ -206,27 +207,25 @@ const EmployeeHome = () => {
       </nav>
 
       <main className="flex-1">
-        <section className="py-20 bg-background">
+        <section className="bg-background py-16 md:py-24">
           <div className="container mx-auto px-4">
-            {/* Create / Edit Form */}
+            {/* Page Header */}
+            <div className="max-w-4xl mb-16">
+              <span className="text-sm font-semibold text-primary tracking-wider uppercase">
+                Management Dashboard
+              </span>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mt-3 leading-tight">
+                List a New Property
+              </h1>
+              <p className="text-muted-foreground text-lg mt-4 max-w-2xl">
+                Create or update accommodation listings. All required fields must be completed before publishing.
+              </p>
+            </div>
+
+            {/* Listing Form */}
             <div className="mb-20">
-              <div className="mb-8">
-                <span className="text-sm font-semibold text-primary tracking-wider uppercase">
-                  Manage Listings
-                </span>
-                <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mt-2">
-                  {editingId ? "Edit Accommodation" : "Create Accommodation"}
-                </h2>
-                <p className="text-muted-foreground mt-3">
-                  {editingId
-                    ? "Update the selected property details."
-                    : "Add a new property to the company catalog."}
-                </p>
-              </div>
-
-              <div className="bg-card rounded-xl border shadow-sm p-6 md:p-8 max-w-4xl">
+              <div className="bg-card rounded-3xl border shadow-sm p-8 md:p-12">
                 <form onSubmit={handleSubmit} className="space-y-10">
-
                   {/* ── Basic Info ── */}
                   <fieldset className="space-y-4">
                     <legend className="text-base font-semibold text-foreground border-b pb-2 w-full">
@@ -234,13 +233,13 @@ const EmployeeHome = () => {
                     </legend>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-foreground">Property Title *</label>
+                        <label className="text-sm font-medium text-foreground">Title *</label>
                         <Input
                           required
                           name="title"
                           value={formData.title}
                           onChange={handleChange}
-                          placeholder="e.g. Modern Loft Downtown"
+                          placeholder="Cozy Downtown Apartment"
                         />
                       </div>
                       <div className="space-y-2">
@@ -250,29 +249,16 @@ const EmployeeHome = () => {
                           name="location"
                           value={formData.location}
                           onChange={handleChange}
-                          placeholder="e.g. Toronto, ON"
+                          placeholder="Toronto, ON"
                         />
                       </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-foreground">Property Type *</label>
-                        <select
-                          name="propertyType"
-                          value={formData.propertyType}
-                          onChange={handleChange}
-                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                        >
-                          <option value="Apartment">Apartment</option>
-                          <option value="House">House</option>
-                          <option value="Villa">Villa</option>
-                          <option value="Hotel">Hotel</option>
-                          <option value="Cabin">Cabin</option>
-                        </select>
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-foreground">Price / Night ($) *</label>
+                        <label className="text-sm font-medium text-foreground">Price per Night ($) *</label>
                         <Input
-                          required
                           type="number"
+                          required
                           min="0"
                           name="pricePerNight"
                           value={formData.pricePerNight}
@@ -280,16 +266,61 @@ const EmployeeHome = () => {
                           placeholder="150"
                         />
                       </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-foreground">Property Type</label>
+                        <select
+                          name="propertyType"
+                          value={formData.propertyType}
+                          onChange={handleChange}
+                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        >
+                          <option value="Apartment">Apartment</option>
+                          <option value="House">House</option>
+                          <option value="Condo">Condo</option>
+                          <option value="Villa">Villa</option>
+                          <option value="Cabin">Cabin</option>
+                          <option value="Studio">Studio</option>
+                        </select>
+                      </div>
+                    </div>
+                  </fieldset>
+
+                  {/* ── Description ── */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground">Description</label>
+                    <textarea
+                      name="description"
+                      rows={4}
+                      value={formData.description}
+                      onChange={handleChange}
+                      placeholder="Describe your property, its features, and what makes it special..."
+                      className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
+                    />
+                  </div>
+
+                  {/* ── Images ── */}
+                  <fieldset className="space-y-4">
+                    <legend className="text-base font-semibold text-foreground border-b pb-2 w-full">
+                      Images
+                    </legend>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground">Featured Image URL</label>
+                      <Input
+                        name="imageUrl"
+                        value={formData.imageUrl}
+                        onChange={handleChange}
+                        placeholder="https://example.com/image.jpg"
+                      />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Description</label>
-                      <textarea
-                        name="description"
-                        value={formData.description}
+                      <label className="text-sm font-medium text-foreground">
+                        Additional Images (comma-separated URLs)
+                      </label>
+                      <Input
+                        name="imageGallery"
+                        value={formData.imageGallery}
                         onChange={handleChange}
-                        rows={4}
-                        placeholder="Describe the property, its vibe, surroundings, unique features..."
-                        className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
+                        placeholder="https://example.com/img1.jpg, https://example.com/img2.jpg"
                       />
                     </div>
                   </fieldset>
@@ -297,11 +328,11 @@ const EmployeeHome = () => {
                   {/* ── Capacity ── */}
                   <fieldset className="space-y-4">
                     <legend className="text-base font-semibold text-foreground border-b pb-2 w-full">
-                      Capacity &amp; Layout
+                      Capacity & Rooms
                     </legend>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                       {[
-                        { label: "Guests", name: "guests" },
+                        { label: "Max Guests", name: "guests" },
                         { label: "Bedrooms", name: "bedrooms" },
                         { label: "Beds", name: "beds" },
                         { label: "Bathrooms", name: "bathrooms" },
@@ -320,54 +351,21 @@ const EmployeeHome = () => {
                     </div>
                   </fieldset>
 
-                  {/* ── Media ── */}
-                  <fieldset className="space-y-4">
-                    <legend className="text-base font-semibold text-foreground border-b pb-2 w-full">
-                      Media
-                    </legend>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Main Image URL</label>
-                      <Input
-                        name="imageUrl"
-                        value={formData.imageUrl}
-                        onChange={handleChange}
-                        placeholder="https://example.com/main-photo.jpg"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">
-                        Gallery Image URLs
-                        <span className="text-muted-foreground font-normal ml-1">(comma-separated)</span>
-                      </label>
-                      <textarea
-                        name="imageGallery"
-                        value={formData.imageGallery}
-                        onChange={handleChange}
-                        rows={3}
-                        placeholder="https://example.com/photo1.jpg, https://example.com/photo2.jpg"
-                        className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
-                      />
-                    </div>
-                  </fieldset>
-
                   {/* ── Amenities ── */}
                   <div className="space-y-4">
-                    <p className="text-base font-semibold text-foreground border-b pb-2">Amenities</p>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                    <h3 className="text-base font-semibold text-foreground border-b pb-2">
+                      Amenities
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
                       {AMENITY_OPTIONS.map((amenity) => {
-                        const selected = (formData.amenities || []).includes(amenity);
+                        const selected = formData.amenities.includes(amenity);
                         return (
                           <button
                             key={amenity}
                             type="button"
-                            onClick={(e) => { e.preventDefault(); handleAmenityToggle(amenity); }}
+                            onClick={() => handleAmenityToggle(amenity)}
                             style={{
-                              width: "auto",
-                              display: "inline-flex",
-                              alignItems: "center",
-                              whiteSpace: "nowrap",
-                              cursor: "pointer",
-                              backgroundColor: selected ? "#2f7d60" : "#e3f3ec",
+                              backgroundColor: selected ? "#4b7a65" : "#f4f4f5",
                               color: selected ? "#ffffff" : "#4b7a65",
                               padding: "4px 14px",
                               borderRadius: "9999px",
